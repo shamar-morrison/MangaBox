@@ -1,5 +1,5 @@
-import { ExternalLink, Heart } from "lucide-react"
-import Link from "next/link"
+import { ExternalLink, Heart } from "lucide-react";
+import Link from "next/link";
 
 export function Footer() {
   return (
@@ -12,7 +12,8 @@ export function Footer() {
               MangaBox
             </h3>
             <p className="text-gray-400 text-sm leading-relaxed">
-              Your gateway to discovering and reading amazing manga. Built with passion for the manga community.
+              Your gateway to discovering and reading amazing manga. Built with
+              passion for the manga community.
             </p>
           </div>
 
@@ -22,9 +23,9 @@ export function Footer() {
             <div className="space-y-2">
               <div className="flex items-center gap-2 text-sm text-gray-300">
                 <span>Manga data provided by</span>
-                <Link 
-                  href="https://mangadex.org" 
-                  target="_blank" 
+                <Link
+                  href="https://mangadex.org"
+                  target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-1 text-purple-400 hover:text-purple-300 transition-colors"
                 >
@@ -46,7 +47,8 @@ export function Footer() {
                 This site respects scanlation groups and their removal requests.
               </p>
               <p>
-                All manga content is sourced from MangaDx API under their acceptable usage policy.
+                All manga content is sourced from MangaDx API under their
+                acceptable usage policy.
               </p>
             </div>
           </div>
@@ -59,21 +61,21 @@ export function Footer() {
               <Heart className="h-4 w-4 text-red-500" />
               <span>for manga readers</span>
             </div>
-            
+
             <div className="text-sm text-gray-500">
               © 2024 MangaBox. Data provided by{" "}
-              <Link 
-                href="https://mangadex.org" 
-                target="_blank" 
+              <Link
+                href="https://mangadex.org"
+                target="_blank"
                 rel="noopener noreferrer"
                 className="text-purple-400 hover:text-purple-300 transition-colors"
               >
-                MangaDx
+                MangaDex
               </Link>
             </div>
           </div>
         </div>
       </div>
     </footer>
-  )
-} 
+  );
+}
