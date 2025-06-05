@@ -12,6 +12,21 @@ interface SearchPageProps {
   }
 }
 
+function SearchBarWrapper() {
+  return <SearchBar />
+}
+
+function SearchBarSkeleton() {
+  return (
+    <div className="flex gap-2 max-w-md mx-auto">
+      <div className="relative flex-1">
+        <Skeleton className="h-10 w-full bg-gray-900" />
+      </div>
+      <Skeleton className="h-10 w-20 bg-gray-900" />
+    </div>
+  )
+}
+
 export default function SearchPage({ searchParams }: SearchPageProps) {
   const query = searchParams.q || ""
 
@@ -37,7 +52,9 @@ export default function SearchPage({ searchParams }: SearchPageProps) {
         </div>
 
         <div className="mb-6 md:mb-8">
-          <SearchBar />
+          <Suspense fallback={<SearchBarSkeleton />}>
+            <SearchBarWrapper />
+          </Suspense>
         </div>
 
         <Suspense fallback={<SearchResultsSkeleton />}>

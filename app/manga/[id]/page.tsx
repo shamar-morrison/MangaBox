@@ -98,7 +98,7 @@ export default async function MangaPage({ params }: MangaPageProps) {
               <MangaCover
                 src={coverUrl || "/placeholder.svg"}
                 alt={title}
-                className="w-full h-auto rounded-lg"
+                className="rounded-lg overflow-hidden"
               />
             </CardContent>
           </Card>
