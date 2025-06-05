@@ -70,3 +70,37 @@
 ::-webkit-scrollbar-thumb:hover {
   background: #555;
 }
+
+/* Performance optimizations */
+.will-change-transform {
+  will-change: transform;
+}
+
+/* Optimize scrolling performance */
+* {
+  scroll-behavior: smooth;
+}
+
+/* Reduce layout shifts */
+img {
+  contain: layout style;
+}
+
+/* Optimize hover animations */
+[class*="hover:scale-"]:hover {
+  transition: transform 0.2s ease-out;
+}
+
+/* Improve image rendering */
+img {
+  image-rendering: optimizeQuality;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+
+/* GPU acceleration for animations */
+.animate-pulse,
+.transition-transform,
+.transition-opacity {
+  transform: translateZ(0);
+}

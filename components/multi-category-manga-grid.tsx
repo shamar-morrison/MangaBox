@@ -66,7 +66,7 @@ const categories: MangaCategory[] = [
 async function fetchMangaByCategory(endpoint: string): Promise<Manga[]> {
   try {
     const response = await fetch(endpoint, {
-      next: { revalidate: 1800 }, // 30 minutes cache
+      next: { revalidate: 3600 }, // Increased cache time to 1 hour
     });
 
     if (!response.ok) {

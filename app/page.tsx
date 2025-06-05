@@ -27,16 +27,16 @@ function MangaGridSkeleton() {
           {/* Category header skeleton */}
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <Skeleton className="h-6 w-6 bg-gray-900" />
+              <Skeleton className="h-6 w-6 bg-gray-900 hidden md:block" />
               <Skeleton className="h-8 w-48 bg-gray-900" />
               <Skeleton className="h-4 w-64 bg-gray-900 hidden md:block" />
             </div>
             <Skeleton className="h-8 w-20 bg-gray-900" />
           </div>
           
-          {/* Category grid skeleton */}
+          {/* Category grid skeleton - reduced items to match new limit */}
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4 md:gap-6">
-            {Array.from({ length: 10 }).map((_, i) => (
+            {Array.from({ length: 8 }).map((_, i) => (
               <div key={i} className="space-y-3">
                 <Skeleton className="h-64 w-full bg-gray-900" />
                 <Skeleton className="h-4 w-full bg-gray-900" />
