@@ -1,10 +1,14 @@
+"use client"
+
+import { FilterOptions, MangaFilters } from "@/components/manga-filters"
 import { OptimizedMangaCard } from "@/components/optimized-manga-card"
 import { SearchBar } from "@/components/search-bar"
+import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
 import { ArrowLeft, Filter } from "lucide-react"
 import Link from "next/link"
-import { Suspense } from "react"
+import { useEffect, useState } from "react"
 
 interface Manga {
   id: string;
@@ -28,27 +32,73 @@ interface Manga {
   }>;
 }
 
-async function fetchAllManga(): Promise<Manga[]> {
+function buildApiUrl(filters: FilterOptions): string {
+  const baseUrl = "https://api.mangadex.org/manga"
+  const params = new URLSearchParams()
+
+  // Basic parameters
+  params.append("limit", "50")
+  params.append("includes[]", "cover_art")
+
+  // Content rating
+  filters.contentRating.forEach(rating => {
+    params.append("contentRating[]", rating)
+  })
+
+  // Status filter
+  filters.status.forEach(status => {
+    params.append("status[]", status)
+  })
+
+  // Publication demographic
+  filters.publicationDemographic.forEach(demo => {
+    params.append("publicationDemographic[]", demo)
+  })
+
+  // Sorting
+  params.append(`order[${filters.sortBy}]`, filters.sortOrder)
+
+  return `${baseUrl}?${params.toString()}`
+}
+
+async function fetchFilteredManga(filters: FilterOptions): Promise<Manga[]> {
   try {
-    const response = await fetch(
-      `https://api.mangadex.org/manga?limit=50&contentRating[]=safe&contentRating[]=suggestive&includes[]=cover_art&order[followedCount]=desc`,
-      { next: { revalidate: 1800 } }
-    );
+    const url = buildApiUrl(filters)
+    const response = await fetch(url, { 
+      next: { revalidate: 1800 },
+      cache: 'force-cache'
+    })
 
     if (!response.ok) {
-      throw new Error("Failed to fetch manga");
+      throw new Error("Failed to fetch manga")
     }
 
-    const data = await response.json();
-    return data.data || [];
+    const data = await response.json()
+    return data.data || []
   } catch (error) {
-    console.error("Error fetching manga:", error);
-    return [];
+    console.error("Error fetching manga:", error)
+    return []
   }
 }
 
-async function BrowseResults() {
-  const manga = await fetchAllManga();
+function BrowseResults({ filters }: { filters: FilterOptions }) {
+  const [manga, setManga] = useState<Manga[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+
+  useEffect(() => {
+    const loadManga = async () => {
+      setIsLoading(true)
+      const results = await fetchFilteredManga(filters)
+      setManga(results)
+      setIsLoading(false)
+    }
+
+    loadManga()
+  }, [filters])
+
+  if (isLoading) {
+    return <BrowseSkeleton />
+  }
 
   return (
     <div>
@@ -56,10 +106,6 @@ async function BrowseResults() {
         <h2 className="text-lg md:text-xl font-semibold text-white">
           Browse All Manga ({manga.length} titles)
         </h2>
-        <Button variant="outline" size="sm" className="border-gray-700 text-gray-300 hover:bg-gray-800">
-          <Filter className="mr-2 h-4 w-4" />
-          Filters
-        </Button>
       </div>
       
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4 md:gap-6">
@@ -67,8 +113,15 @@ async function BrowseResults() {
           <OptimizedMangaCard key={item.id} manga={item} />
         ))}
       </div>
+
+      {manga.length === 0 && (
+        <div className="text-center py-12">
+          <p className="text-gray-400 text-lg">No manga found with the current filters</p>
+          <p className="text-gray-500 mt-2">Try adjusting your filter settings</p>
+        </div>
+      )}
     </div>
-  );
+  )
 }
 
 function BrowseSkeleton() {
@@ -88,10 +141,28 @@ function BrowseSkeleton() {
         ))}
       </div>
     </div>
-  );
+  )
 }
 
 export default function BrowsePage() {
+  const [showFilters, setShowFilters] = useState(false)
+  const [filters, setFilters] = useState<FilterOptions>({
+    status: [],
+    contentRating: ["safe", "suggestive"],
+    publicationDemographic: [],
+    sortBy: "followedCount",
+    sortOrder: "desc",
+  })
+
+  const getActiveFiltersCount = () => {
+    return (
+      filters.status.length +
+      (filters.contentRating.length !== 2 ? 1 : 0) +
+      filters.publicationDemographic.length +
+      (filters.sortBy !== "followedCount" || filters.sortOrder !== "desc" ? 1 : 0)
+    )
+  }
+
   return (
     <div className="min-h-screen bg-[#0a0a0a]">
       <div className="container mx-auto px-4 py-6 md:py-8">
@@ -115,9 +186,55 @@ export default function BrowsePage() {
           <SearchBar />
         </div>
 
-        <Suspense fallback={<BrowseSkeleton />}>
-          <BrowseResults />
-        </Suspense>
+        {/* Filter Controls */}
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center gap-3">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setShowFilters(true)}
+              className="border-gray-700 text-gray-300 hover:bg-gray-800"
+            >
+              <Filter className="mr-2 h-4 w-4" />
+              Filters
+              {getActiveFiltersCount() > 0 && (
+                <Badge variant="secondary" className="ml-2 bg-purple-600 text-white">
+                  {getActiveFiltersCount()}
+                </Badge>
+              )}
+            </Button>
+          </div>
+
+          {/* Active filters preview */}
+          {getActiveFiltersCount() > 0 && (
+            <div className="hidden md:flex items-center gap-2 text-sm text-gray-400">
+              <span>Active filters:</span>
+              {filters.status.length > 0 && (
+                <Badge variant="outline" className="border-gray-600 text-gray-300">
+                  Status: {filters.status.length}
+                </Badge>
+              )}
+              {filters.publicationDemographic.length > 0 && (
+                <Badge variant="outline" className="border-gray-600 text-gray-300">
+                  Demo: {filters.publicationDemographic.length}
+                </Badge>
+              )}
+              {(filters.sortBy !== "followedCount" || filters.sortOrder !== "desc") && (
+                <Badge variant="outline" className="border-gray-600 text-gray-300">
+                  Custom Sort
+                </Badge>
+              )}
+            </div>
+          )}
+        </div>
+
+        <BrowseResults filters={filters} />
+
+        <MangaFilters
+          isOpen={showFilters}
+          onClose={() => setShowFilters(false)}
+          onFiltersChange={setFilters}
+        />
       </div>
     </div>
   )
