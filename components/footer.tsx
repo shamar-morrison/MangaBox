@@ -29,12 +29,13 @@ export function Footer() {
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-1 text-purple-400 hover:text-purple-300 transition-colors"
                 >
-                  MangaDx
+                  MangaDex
                   <ExternalLink className="h-3 w-3" />
                 </Link>
               </div>
               <p className="text-xs text-gray-500">
-                MangaDx is an ad-free manga reader offering high-quality images.
+                MangaDex is an ad-free manga reader offering high-quality
+                images.
               </p>
             </div>
           </div>
