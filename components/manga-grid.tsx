@@ -34,14 +34,6 @@ async function getPopularManga(): Promise<Manga[]> {
     }
 
     const data = await response.json()
-    
-    // Debug logging to see the structure
-    console.log("API Response:", data)
-    if (data.data && data.data.length > 0) {
-      console.log("First manga item:", data.data[0])
-      console.log("First manga relationships:", data.data[0].relationships)
-    }
-    
     return data.data || []
   } catch (error) {
     console.error("Error fetching manga:", error)

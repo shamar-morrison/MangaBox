@@ -1,4 +1,5 @@
 import { ChapterList } from "@/components/chapter-list"
+import { Header } from "@/components/header"
 import { MangaCover } from "@/components/manga-cover"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -71,7 +72,9 @@ export default async function MangaPage({ params }: MangaPageProps) {
 
   return (
     <div className="min-h-screen bg-[#0a0a0a]">
-      <div className="container mx-auto px-4 py-8">
+      <Header />
+      
+      <main className="container mx-auto px-4 py-8">
         <Link href="/">
           <Button variant="ghost" className="mb-6 text-white hover:bg-gray-900">
             <ArrowLeft className="mr-2 h-4 w-4" />
@@ -143,7 +146,7 @@ export default async function MangaPage({ params }: MangaPageProps) {
             </Card>
           </div>
         </div>
-      </div>
+      </main>
     </div>
   )
 }
