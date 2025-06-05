@@ -1,6 +1,5 @@
 "use client"
 
-import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { ChevronRight, Search } from "lucide-react"
@@ -95,9 +94,8 @@ export function EnhancedSearchBar({ className = "" }: SearchBarProps) {
     setDebounceTimer(timer)
   }
 
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (query.trim()) {
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" && query.trim()) {
       setShowDropdown(false)
       router.push(`/search?q=${encodeURIComponent(query.trim())}`)
     }
@@ -109,33 +107,24 @@ export function EnhancedSearchBar({ className = "" }: SearchBarProps) {
 
   return (
     <div ref={searchRef} className={`relative ${className}`}>
-      <form onSubmit={handleSearch} className="flex gap-2">
-        <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-          <Input
-            type="text"
-            placeholder="Search manga..."
-            value={query}
-            onChange={(e) => handleInputChange(e.target.value)}
-            onFocus={() => query && results.length > 0 && setShowDropdown(true)}
-            className="pl-10 bg-gray-900/80 border-gray-700 text-white placeholder-gray-400 focus:border-purple-500 backdrop-blur-sm"
-          />
-          
-          {isLoading && (
-            <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
-              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-purple-500"></div>
-            </div>
-          )}
-        </div>
+      <div className="relative">
+        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+        <Input
+          type="text"
+          placeholder="Search manga..."
+          value={query}
+          onChange={(e) => handleInputChange(e.target.value)}
+          onKeyPress={handleKeyPress}
+          onFocus={() => query && results.length > 0 && setShowDropdown(true)}
+          className="pl-10 pr-10 bg-gray-900/80 border-gray-700 text-white placeholder-gray-400 focus:border-purple-500 backdrop-blur-sm"
+        />
         
-        <Button
-          type="submit"
-          size="sm"
-          className="bg-gradient-to-r from-purple-600 to-fuchsia-600 hover:from-purple-700 hover:to-fuchsia-700"
-        >
-          Search
-        </Button>
-      </form>
+        {isLoading && (
+          <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-purple-500"></div>
+          </div>
+        )}
+      </div>
 
       {/* Dropdown Results */}
       {showDropdown && results.length > 0 && (

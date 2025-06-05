@@ -1,6 +1,8 @@
-import type React from "react"
+import { Footer } from "@/components/footer"
+import { Header } from "@/components/header"
 import type { Metadata } from "next"
-import { Poppins, Montserrat } from "next/font/google"
+import { Montserrat, Poppins } from "next/font/google"
+import type React from "react"
 import "./globals.css"
 
 // Load Poppins font - compatible with Next.js 14.2.26
@@ -20,8 +22,8 @@ const montserrat = Montserrat({
 })
 
 export const metadata: Metadata = {
-  title: "MangaReader",
-  description: "Read your favorite manga online",
+  title: "MangaBox - Discover and Read Manga",
+  description: "Discover and read your favorite manga across multiple categories. Powered by MangaDx API.",
 }
 
 export default function RootLayout({
@@ -31,7 +33,13 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${poppins.variable} ${montserrat.variable} font-sans`}>{children}</body>
+      <body className={`${poppins.variable} ${montserrat.variable} font-sans min-h-screen bg-[#0a0a0a]`}>
+        <Header />
+        <main className="flex-1">
+          {children}
+        </main>
+        <Footer />
+      </body>
     </html>
   )
 }

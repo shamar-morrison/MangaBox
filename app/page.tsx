@@ -1,25 +1,20 @@
-import { Header } from "@/components/header"
 import { MultiCategoryMangaGrid } from "@/components/multi-category-manga-grid"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Suspense } from "react"
 
 export default function HomePage() {
   return (
-    <div className="min-h-screen bg-[#0a0a0a]">
-      <Header />
-      
-      <main className="container mx-auto px-4 py-8">
-        <div className="mb-8">
-          <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">
-            Welcome to <span className="bg-gradient-to-r from-purple-500 to-fuchsia-500 bg-clip-text text-transparent">MangaBox</span>
-          </h1>
-          <p className="text-gray-300 text-lg">Discover and read your favorite manga across multiple categories</p>
-        </div>
+    <div className="container mx-auto px-4 py-8">
+      <div className="mb-8">
+        <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">
+          Welcome to <span className="bg-gradient-to-r from-purple-500 to-fuchsia-500 bg-clip-text text-transparent">MangaBox</span>
+        </h1>
+        <p className="text-gray-300 text-lg">Discover and read your favorite manga across multiple categories</p>
+      </div>
 
-        <Suspense fallback={<MangaGridSkeleton />}>
-          <MultiCategoryMangaGrid />
-        </Suspense>
-      </main>
+      <Suspense fallback={<MangaGridSkeleton />}>
+        <MultiCategoryMangaGrid />
+      </Suspense>
     </div>
   )
 }
