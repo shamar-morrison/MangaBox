@@ -1,73 +1,86 @@
-import { ChapterList } from "@/components/chapter-list"
-import { MangaCover } from "@/components/manga-cover"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { ArrowLeft, BookOpen, Calendar } from "lucide-react"
-import Link from "next/link"
-import { notFound } from "next/navigation"
+import { ChapterList } from "@/components/chapter-list";
+import { MangaCover } from "@/components/manga-cover";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { ArrowLeft, BookOpen, Calendar } from "lucide-react";
+import Link from "next/link";
+import { notFound } from "next/navigation";
 
 interface MangaPageProps {
   params: {
-    id: string
-  }
+    id: string;
+  };
 }
 
 async function getMangaDetails(id: string) {
   try {
     const [mangaResponse, chaptersResponse] = await Promise.all([
-      fetch(`https://api.mangadex.org/manga/${id}?includes[]=cover_art&includes[]=author&includes[]=artist`, {
-        next: { revalidate: 3600 },
-      }),
-      fetch(`https://api.mangadex.org/manga/${id}/feed?limit=500&order[chapter]=asc&order[volume]=asc&translatedLanguage[]=en&contentRating[]=safe&contentRating[]=suggestive&contentRating[]=erotica`, {
-        next: { revalidate: 1800 },
-      }),
-    ])
+      fetch(
+        `https://api.mangadex.org/manga/${id}?includes[]=cover_art&includes[]=author&includes[]=artist`,
+        {
+          next: { revalidate: 3600 },
+        },
+      ),
+      fetch(
+        `https://api.mangadex.org/manga/${id}/feed?limit=500&order[chapter]=asc&order[volume]=asc&translatedLanguage[]=en&contentRating[]=safe&contentRating[]=suggestive&contentRating[]=erotica`,
+        {
+          next: { revalidate: 1800 },
+        },
+      ),
+    ]);
 
     if (!mangaResponse.ok) {
-      throw new Error(`Manga API responded with ${mangaResponse.status}`)
+      throw new Error(`Manga API responded with ${mangaResponse.status}`);
     }
 
-    const mangaData = await mangaResponse.json()
-    
+    const mangaData = await mangaResponse.json();
+
     if (!chaptersResponse.ok) {
-      console.warn(`Chapters API responded with ${chaptersResponse.status}`)
+      console.warn(`Chapters API responded with ${chaptersResponse.status}`);
       return {
         manga: mangaData.data,
         chapters: [],
-      }
+      };
     }
 
-    const chaptersData = await chaptersResponse.json()
+    const chaptersData = await chaptersResponse.json();
 
     return {
       manga: mangaData.data,
       chapters: chaptersData.data || [],
-    }
+    };
   } catch (error) {
-    console.error("Error fetching manga details:", error)
-    return null
+    console.error("Error fetching manga details:", error);
+    return null;
   }
 }
 
 export default async function MangaPage({ params }: MangaPageProps) {
-  const data = await getMangaDetails(params.id)
+  const data = await getMangaDetails(params.id);
 
   if (!data) {
-    notFound()
+    notFound();
   }
 
-  const { manga, chapters } = data
-  const title = manga.attributes.title.en || Object.values(manga.attributes.title)[0] || "Unknown Title"
+  const { manga, chapters } = data;
+  const title =
+    manga.attributes.title.en ||
+    Object.values(manga.attributes.title)[0] ||
+    "Unknown Title";
   const description =
-    manga.attributes.description.en || Object.values(manga.attributes.description)[0] || "No description available"
-  const coverArt = manga.relationships.find((rel: any) => rel.type === "cover_art")
+    manga.attributes.description.en ||
+    Object.values(manga.attributes.description)[0] ||
+    "No description available";
+  const coverArt = manga.relationships.find(
+    (rel: any) => rel.type === "cover_art",
+  );
   const coverUrl = coverArt
-    ? `/api/proxy-image?url=${encodeURIComponent(`https://uploads.mangadx.org/covers/${manga.id}/${coverArt.attributes?.fileName}`)}`
-    : "/placeholder.svg?height=400&width=300"
+    ? `/api/proxy-image?url=${encodeURIComponent(`https://uploads.mangadex.org/covers/${manga.id}/${coverArt.attributes?.fileName}`)}`
+    : "/placeholder.svg?height=400&width=300";
 
-  const author = manga.relationships.find((rel: any) => rel.type === "author")
-  const artist = manga.relationships.find((rel: any) => rel.type === "artist")
+  const author = manga.relationships.find((rel: any) => rel.type === "author");
+  const artist = manga.relationships.find((rel: any) => rel.type === "artist");
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -99,8 +112,13 @@ export default async function MangaPage({ params }: MangaPageProps) {
             </CardHeader>
             <CardContent className="space-y-3">
               <div className="flex items-center gap-2">
-                <Badge className="bg-purple-600 text-white">{manga.attributes.status}</Badge>
-                <Badge variant="outline" className="border-gray-700 text-gray-300">
+                <Badge className="bg-purple-600 text-white">
+                  {manga.attributes.status}
+                </Badge>
+                <Badge
+                  variant="outline"
+                  className="border-gray-700 text-gray-300"
+                >
                   {manga.attributes.contentRating}
                 </Badge>
               </div>
@@ -112,12 +130,14 @@ export default async function MangaPage({ params }: MangaPageProps) {
               )}
               {author && (
                 <div className="text-gray-300">
-                  <span className="font-medium">Author:</span> {author.attributes?.name || "Unknown"}
+                  <span className="font-medium">Author:</span>{" "}
+                  {author.attributes?.name || "Unknown"}
                 </div>
               )}
               {artist && artist.id !== author?.id && (
                 <div className="text-gray-300">
-                  <span className="font-medium">Artist:</span> {artist.attributes?.name || "Unknown"}
+                  <span className="font-medium">Artist:</span>{" "}
+                  {artist.attributes?.name || "Unknown"}
                 </div>
               )}
             </CardContent>
@@ -134,7 +154,9 @@ export default async function MangaPage({ params }: MangaPageProps) {
 
           <Card className="bg-gray-900/50 border-gray-800">
             <CardHeader>
-              <CardTitle className="text-white">Chapters ({chapters.length})</CardTitle>
+              <CardTitle className="text-white">
+                Chapters ({chapters.length})
+              </CardTitle>
             </CardHeader>
             <CardContent>
               <ChapterList chapters={chapters} mangaId={manga.id} />
@@ -143,5 +165,5 @@ export default async function MangaPage({ params }: MangaPageProps) {
         </div>
       </div>
     </div>
-  )
+  );
 }

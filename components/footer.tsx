@@ -48,7 +48,7 @@ export function Footer() {
                 This site respects scanlation groups and their removal requests.
               </p>
               <p>
-                All manga content is sourced from MangaDx API under their
+                All manga content is sourced from MangaDex API under their
                 acceptable usage policy.
               </p>
             </div>
