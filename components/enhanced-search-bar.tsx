@@ -2,11 +2,11 @@
 
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
 import { ChevronRight, Search } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { cn } from "@/lib/utils";
 
 interface SearchResult {
   id: string;
@@ -138,17 +138,17 @@ export function EnhancedSearchBar({ className = "" }: SearchBarProps) {
 
       {/* Dropdown Results */}
       {showDropdown && results.length > 0 && (
-        <Card className="absolute top-full left-0 right-0 mt-2 bg-gray-900/95 border-gray-700 backdrop-blur-sm z-50 max-h-80 overflow-y-auto">
+        <Card className="absolute top-full left-0 right-0 mt-2 bg-gray-900/95 border-gray-700 backdrop-blur-sm z-50 max-h-80 overflow-y-auto md:max-h-96">
           <div className="p-2">
             {results.map((manga) => (
               <Link
                 key={manga.id}
                 href={`/manga/${manga.id}`}
                 onClick={() => setShowDropdown(false)}
-                className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800/50 transition-colors group"
+                className="flex items-center gap-3 p-2 md:p-3 rounded-lg hover:bg-gray-800/50 transition-colors group"
               >
-                <div className="flex-1">
-                  <h4 className="text-white text-sm font-medium group-hover:text-purple-400 transition-colors">
+                <div className="flex-1 min-w-0">
+                  <h4 className="text-white text-sm font-medium group-hover:text-purple-400 transition-colors truncate">
                     {getTitle(manga)}
                   </h4>
                   <div className="flex items-center gap-2 mt-1">
@@ -165,7 +165,7 @@ export function EnhancedSearchBar({ className = "" }: SearchBarProps) {
                     )}
                   </div>
                 </div>
-                <ChevronRight className="h-4 w-4 text-gray-500 group-hover:text-purple-400 transition-colors" />
+                <ChevronRight className="h-4 w-4 text-gray-500 group-hover:text-purple-400 transition-colors flex-shrink-0" />
               </Link>
             ))}
 
@@ -176,8 +176,8 @@ export function EnhancedSearchBar({ className = "" }: SearchBarProps) {
                   onClick={() => setShowDropdown(false)}
                   className="flex items-center justify-center gap-2 p-2 text-sm text-purple-400 hover:text-purple-300 transition-colors"
                 >
-                  View all results for "{query}"
-                  <ChevronRight className="h-4 w-4" />
+                  <span className="truncate">View all results for "{query}"</span>
+                  <ChevronRight className="h-4 w-4 flex-shrink-0" />
                 </Link>
               </div>
             )}

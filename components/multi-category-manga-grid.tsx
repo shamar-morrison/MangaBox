@@ -93,7 +93,7 @@ async function MangaCategorySection({ category }: { category: MangaCategory }) {
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-2 text-white">
-            {category.icon}
+            <span className="hidden md:block">{category.icon}</span>
             <h2 className="text-2xl font-bold">{category.title}</h2>
           </div>
           <span className="text-gray-400 text-sm hidden md:block">

@@ -37,38 +37,33 @@ interface Manga {
 const categoryConfig: {
   [key: string]: {
     title: string;
-    icon: React.ReactNode;
     endpoint: string;
     description: string;
   };
 } = {
   "popular-manga": {
     title: "Popular Manga",
-    icon: <TrendingUp className="h-6 w-6" />,
     endpoint:
       "https://api.mangadex.org/manga?limit=50&order[followedCount]=desc&contentRating[]=safe&contentRating[]=suggestive&includes[]=cover_art",
-    description: "Most followed manga on mangadex",
+    description: "Most followed manga",
   },
   "recently-updated": {
     title: "Recently Updated",
-    icon: <Clock className="h-6 w-6" />,
     endpoint:
       "https://api.mangadex.org/manga?limit=50&order[updatedAt]=desc&contentRating[]=safe&contentRating[]=suggestive&includes[]=cover_art",
     description: "Latest updates from ongoing series",
   },
   "highest-rated": {
     title: "Highest Rated",
-    icon: <Star className="h-6 w-6" />,
     endpoint:
       "https://api.mangadex.org/manga?limit=50&order[rating]=desc&contentRating[]=safe&contentRating[]=suggestive&includes[]=cover_art",
     description: "Top-rated manga by the community",
   },
   "newest-additions": {
     title: "Newest Additions",
-    icon: <Sparkles className="h-6 w-6" />,
     endpoint:
       "https://api.mangadex.org/manga?limit=50&order[createdAt]=desc&contentRating[]=safe&contentRating[]=suggestive&includes[]=cover_art",
-    description: "Fresh manga just added to mangadex",
+    description: "Fresh manga just added",
   },
 };
 
@@ -110,7 +105,6 @@ async function CategoryContent({ slug }: { slug: string }) {
         </Link>
 
         <div className="flex items-center gap-4 mb-4">
-          <div className="text-purple-400">{config.icon}</div>
           <div>
             <h1 className="text-3xl md:text-4xl font-bold text-white">
               {config.title}

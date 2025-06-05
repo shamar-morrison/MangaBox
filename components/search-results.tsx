@@ -1,10 +1,32 @@
-import { OptimizedMangaCard } from "@/components/optimized-manga-card"
+import { OptimizedMangaCard } from "@/components/optimized-manga-card";
+
+interface Manga {
+  id: string;
+  attributes: {
+    title: {
+      en?: string;
+      [key: string]: string | undefined;
+    };
+    description: {
+      en?: string;
+      [key: string]: string | undefined;
+    };
+    status: string;
+    year: number | null;
+    contentRating: string;
+  };
+  relationships: Array<{
+    type: string;
+    id: string;
+    attributes?: any;
+  }>;
+}
 
 interface SearchResultsProps {
   query: string
 }
 
-async function searchManga(query: string) {
+async function searchManga(query: string): Promise<Manga[]> {
   if (!query.trim()) {
     return []
   }
@@ -49,10 +71,10 @@ export async function SearchResults({ query }: SearchResultsProps) {
 
   return (
     <div>
-      <h2 className="text-xl font-semibold text-white mb-6">
+      <h2 className="text-lg md:text-xl font-semibold text-white mb-4 md:mb-6">
         Found {results.length} result{results.length !== 1 ? "s" : ""}
       </h2>
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
         {results.map((manga) => (
           <OptimizedMangaCard key={manga.id} manga={manga} />
         ))}
