@@ -1,19 +1,19 @@
-import { SearchBar } from "@/components/search-bar"
-import { SearchResults } from "@/components/search-results"
-import { Button } from "@/components/ui/button"
-import { Skeleton } from "@/components/ui/skeleton"
-import { ArrowLeft } from "lucide-react"
-import Link from "next/link"
-import { Suspense } from "react"
+import { SearchBar } from "@/components/search-bar";
+import { SearchResults } from "@/components/search-results";
+import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
+import { ArrowLeft } from "lucide-react";
+import Link from "next/link";
+import { Suspense } from "react";
 
 interface SearchPageProps {
   searchParams: {
-    q?: string
-  }
+    q?: string;
+  };
 }
 
 function SearchBarWrapper() {
-  return <SearchBar />
+  return <SearchBar />;
 }
 
 function SearchBarSkeleton() {
@@ -24,17 +24,20 @@ function SearchBarSkeleton() {
       </div>
       <Skeleton className="h-10 w-20 bg-gray-900" />
     </div>
-  )
+  );
 }
 
 export default function SearchPage({ searchParams }: SearchPageProps) {
-  const query = searchParams.q || ""
+  const query = searchParams.q || "";
 
   return (
     <div className="min-h-screen bg-[#0a0a0a]">
       <div className="container mx-auto px-4 py-6 md:py-8">
         <Link href="/">
-          <Button variant="ghost" className="mb-4 md:mb-6 text-white hover:bg-gray-900">
+          <Button
+            variant="ghost"
+            className="mb-4 md:mb-6 text-white hover:bg-gray-900"
+          >
             <ArrowLeft className="mr-2 h-4 w-4" />
             Back to Home
           </Button>
@@ -44,11 +47,6 @@ export default function SearchPage({ searchParams }: SearchPageProps) {
           <h1 className="text-2xl md:text-3xl font-bold text-white mb-4 bg-gradient-to-r from-purple-500 to-fuchsia-500 bg-clip-text text-transparent">
             Search Results
           </h1>
-          {query && (
-            <p className="text-gray-300 font-light text-sm md:text-base">
-              Results for: <span className="font-medium">"{query}"</span>
-            </p>
-          )}
         </div>
 
         <div className="mb-6 md:mb-8">
@@ -62,7 +60,7 @@ export default function SearchPage({ searchParams }: SearchPageProps) {
         </Suspense>
       </div>
     </div>
-  )
+  );
 }
 
 function SearchResultsSkeleton() {
@@ -76,5 +74,5 @@ function SearchResultsSkeleton() {
         </div>
       ))}
     </div>
-  )
+  );
 }

@@ -2,11 +2,10 @@
 
 import type React from "react";
 
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export function SearchBar() {
   const [query, setQuery] = useState("");
@@ -14,12 +13,16 @@ export function SearchBar() {
   const [debounceTimer, setDebounceTimer] = useState<NodeJS.Timeout | null>(
     null,
   );
+  const isTypingRef = useRef(false);
   const router = useRouter();
   const searchParams = useSearchParams();
 
   useEffect(() => {
     const currentQuery = searchParams.get("q") || "";
-    setQuery(currentQuery);
+    // Only update the input value if the user is not actively typing
+    if (!isTypingRef.current) {
+      setQuery(currentQuery);
+    }
   }, [searchParams]);
 
   useEffect(() => {
@@ -43,12 +46,14 @@ export function SearchBar() {
 
   const handleInputChange = (value: string) => {
     setQuery(value);
+    isTypingRef.current = true;
 
     if (debounceTimer) {
       clearTimeout(debounceTimer);
     }
 
     const timer = setTimeout(() => {
+      isTypingRef.current = false;
       performSearch(value);
     }, 300);
 
@@ -60,6 +65,7 @@ export function SearchBar() {
     if (debounceTimer) {
       clearTimeout(debounceTimer);
     }
+    isTypingRef.current = false;
     performSearch(query);
   };
 
@@ -68,6 +74,7 @@ export function SearchBar() {
       if (debounceTimer) {
         clearTimeout(debounceTimer);
       }
+      isTypingRef.current = false;
       performSearch(query);
     }
   };
